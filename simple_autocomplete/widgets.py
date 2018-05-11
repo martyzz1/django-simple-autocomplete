@@ -81,7 +81,7 @@ class AutoCompleteWidget(Select):
                         display = str(value)
 
         html = u"""
-<input id="id_%(name)s_helper" class="sa_autocompletewidget" type="text" value="%(display)s" data-url="%(url)s" />
+<input id="id_%(name)s_helper" class="sa_autocompletewidget vLargeTextField" type="text" value="%(display)s" data-url="%(url)s" />
 <a href="#" title="Clear" onclick="django.jQuery('#id_%(name)s_helper').val(''); django.jQuery('#id_%(name)s_helper').focus(); django.jQuery('#id_%(name)s').val(''); return false;">x<small></small></a>
 <input name="%(name)s" id="id_%(name)s" type="hidden" value="%(value)s" />""" % dict(name=name, url=url, display=display, value=value)
         return mark_safe(html)
