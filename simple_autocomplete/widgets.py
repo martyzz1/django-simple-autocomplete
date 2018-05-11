@@ -153,7 +153,7 @@ class AutoCompleteMultipleWidget(SelectMultiple):
             html = u"""
 <input id="id_%(name)s_helper" class=".sa_autocompletemultiplewidget" type="text" value="" data-url="%(url)s" data-name="%(name)s"  />
 <input id="id_%(name)s" type="hidden" value="" />
-<div class="autocomplete-placeholder">""" % (name=name, url=url)
+<div class="autocomplete-placeholder">""" % dict(name=name, url=url)
 
             # Create html for existing values
             for v in value:
