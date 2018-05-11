@@ -21,6 +21,16 @@ class AutoCompleteWidget(Select):
     token = None
     model = None
 
+    class Media:
+        css = {
+            'all': ('simple_autocomplete/jquery-ui.css',)
+        }
+        js = (
+            'simple_autocomplete/jquery-ui.js',
+            'simple_autocomplete/simple_autocomplete.js',
+        )
+
+
     def __init__(self, url=None, initial_display=None, token=None,
         model=None, *args, **kwargs):
         """
@@ -71,41 +81,7 @@ class AutoCompleteWidget(Select):
                         display = str(value)
 
         html = u"""
-    <script type="text/javascript">
-    (function($) {
-
-    $(document).ready(function() {
-
-    $("#id_%(name)s_helper").autocomplete({
-        source: function(request, response){
-            $.ajax({
-                url: "%(url)s",
-                data: {q: request.term},
-                success: function(data) {
-                    if (data != 'CACHE_MISS')
-                    {
-                        response($.map(data, function(item) {
-                            return {
-                                label: item[1],
-                                value: item[1],
-                                real_value: item[0]
-                            };
-                        }));
-                    }
-                },
-                dataType: "json"
-            });
-        },
-        select: function(event, ui) { $('#id_%(name)s').val(ui.item.real_value); },
-        minLength: 3
-    });
-
-    });
-
-    })(django.jQuery);
-    </script>
-
-<input id="id_%(name)s_helper" type="text" value="%(display)s" />
+<input id="id_%(name)s_helper" class="sa_autocompletewidget" type="text" value="%(display)s" data-url="%(url)s" />
 <a href="#" title="Clear" onclick="django.jQuery('#id_%(name)s_helper').val(''); django.jQuery('#id_%(name)s_helper').focus(); django.jQuery('#id_%(name)s').val(''); return false;">x<small></small></a>
 <input name="%(name)s" id="id_%(name)s" type="hidden" value="%(value)s" />""" % dict(name=name, url=url, display=display, value=value)
         return mark_safe(html)
@@ -117,6 +93,16 @@ class AutoCompleteMultipleWidget(SelectMultiple):
     initial_display = None
     token = None
     model = None
+
+    class Media:
+        css = {
+            'all': ('simple_autocomplete/jquery-ui.css',)
+        }
+        js = (
+            'simple_autocomplete/jquery-ui.js',
+            'simple_autocomplete/simple_autocomplete.js',
+        )
+
 
     def __init__(self, url=None, initial_display=None, token=None,
         model=None, *args, **kwargs):
@@ -165,53 +151,9 @@ class AutoCompleteMultipleWidget(SelectMultiple):
                 url = reverse('simple_autocomplete:simple-autocomplete', args=[self.token])
 
             html = u"""
-    <script type="text/javascript">
-    (function($) {
-
-    $(document).ready(function() {
-
-    $("#id_%s_helper").autocomplete({
-        source: function(request, response) {
-            $.ajax({
-                url: "%s",
-                data: {q: request.term},
-                success: function(data) {
-                    if (data != 'CACHE_MISS')
-                    {
-                        response($.map(data, function(item) {
-                            return {
-                                label: item[1],
-                                value: item[1],
-                                real_value: item[0]
-                            };
-                        }));
-                    }
-                },
-                dataType: "json"
-            });
-        },
-        select: function(event, ui) {
-            var name = '%s';
-            var parent = $('#id_' + name).parent();
-            var target = $('div.autocomplete-placeholder', parent);
-            target.append('<p><input name="' + name + '" value="' + ui.item.real_value + '" '
-                + 'type="hidden" />' + ui.item.value
-                + ' <a href="#" title="Remove" onclick="django.jQuery(this).parent().remove(); django.jQuery('+"'"+'#id_%s_helper'+"'"+').val(' + "''" + '); django.jQuery('+"'"+'#id_%s_helper'+"'"+').focus(); return false;">x<small></small></a></p>');
-        },
-        close: function(event, ui) {
-            django.jQuery('#id_%s_helper').val('');
-        },
-        minLength: 3
-    });
-
-    });
-
-    })(django.jQuery);
-    </script>
-
-<input id="id_%s_helper" type="text" value="" />
-<input id="id_%s" type="hidden" value="" />
-<div class="autocomplete-placeholder">""" % (name, url, name, name, name, name, name, name)
+<input id="id_%(name)s_helper" class=".sa_autocompletemultiplewidget" type="text" value="" data-url="%(url)s" data-name="%(name)s"  />
+<input id="id_%(name)s" type="hidden" value="" />
+<div class="autocomplete-placeholder">""" % (name=name, url=url)
 
             # Create html for existing values
             for v in value:
